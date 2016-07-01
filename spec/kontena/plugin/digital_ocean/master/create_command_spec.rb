@@ -20,8 +20,7 @@ describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
 
     it 'passes options to provisioner' do
       options = [
-        '--token', 'secretone',
-        '--ssh-key', '~/.ssh/id_rsa.pub'
+        '--token', 'secretone'
       ]
       expect(subject).to receive(:provisioner).with('secretone').and_return(provisioner)
       expect(provisioner).to receive(:run!).with(

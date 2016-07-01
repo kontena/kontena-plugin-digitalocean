@@ -5,7 +5,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
 
     parameter "[NAME]", "Node name"
     option "--token", "TOKEN", "DigitalOcean API token", required: true
-    option "--ssh-key", "SSH_KEY", "Path to ssh public key", required: true
+    option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
     option "--size", "SIZE", "Droplet size", default: '1gb'
     option "--region", "REGION", "Region", default: 'ams2'
     option "--version", "VERSION", "Define installed Kontena version", default: 'latest'
