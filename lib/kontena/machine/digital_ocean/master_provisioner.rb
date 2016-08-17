@@ -32,17 +32,14 @@ module Kontena
             end
           end
 
-          userdata_vars = {
+          name = generate_name
+          userdata_vars = opts.merge(
               ssl_cert: ssl_cert,
-              auth_server: opts[:auth_server],
-              version: opts[:version],
-              vault_secret: opts[:vault_secret],
-              vault_iv: opts[:vault_iv],
-              mongodb_uri: opts[:mongodb_uri]
-          }
+              server_name: name.sub('kontena-master-', '')
+          )
 
           droplet = DropletKit::Droplet.new(
-              name: generate_name,
+              name: name,
               region: opts[:region],
               image: 'coreos-stable',
               size: opts[:size],
@@ -67,8 +64,12 @@ module Kontena
             sleep 5 until master_running?
           end
 
-          puts "Kontena Master is now running at #{master_url}"
-          puts "Use #{"kontena login --name=#{droplet.name.sub('kontena-master-', '')} #{master_url}".colorize(:light_black)} to complete Kontena Master setup"
+          puts "Kontena Master is now running at #{master_url}".colorize(:green)
+          {
+            name: name.sub('kontena-master-', ''),
+            public_ip: droplet.public_ip,
+            code: opts[:initial_admin_code]
+          }
         end
 
         def user_data(vars)
