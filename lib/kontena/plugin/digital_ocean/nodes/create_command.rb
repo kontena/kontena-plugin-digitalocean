@@ -14,7 +14,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
       require_api_url
       require_current_grid
 
-      require 'kontena/machine/digital_ocean'
+      require_relative '../../../machine/digital_ocean'
       grid = fetch_grid
       provisioner = provisioner(client(require_token), token)
       provisioner.run!(
