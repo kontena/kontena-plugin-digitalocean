@@ -17,7 +17,7 @@ module Kontena::Plugin::DigitalOcean::Master
 
 
     def execute
-      require 'kontena/machine/digital_ocean'
+      require_relative '../../../machine/digital_ocean'
 
       provisioner = provisioner(token)
       provisioner.run!(

@@ -10,7 +10,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
       require_api_url
       require_current_grid
 
-      require 'kontena/machine/digital_ocean'
+      require_relative '../../../machine/digital_ocean'
       grid = client(require_token).get("grids/#{current_grid}")
       destroyer = destroyer(client(require_token), token)
       destroyer.run!(grid, name)

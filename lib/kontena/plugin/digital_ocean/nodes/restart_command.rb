@@ -10,7 +10,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
       require_api_url
       require_current_grid
 
-      require 'kontena/machine/digital_ocean'
+      require_relative '../../../machine/digital_ocean'
 
       client = DropletKit::Client.new(access_token: token)
       droplet = client.droplets.all.find{|d| d.name == name}
