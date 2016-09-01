@@ -54,6 +54,7 @@ coreos:
         ExecStart=/usr/bin/docker run --name=kontena-server-mongo \
             --volumes-from=kontena-server-mongo-data \
             mongo:3.0 mongod --smallfiles
+        ExecStop=/usr/bin/docker stop kontena-server-mongo
 <% end -%>
     - name: kontena-server-api.service
       command: start
@@ -94,6 +95,7 @@ coreos:
 <% end -%>
             -e VAULT_KEY=${KONTENA_VAULT_KEY} -e VAULT_IV=${KONTENA_VAULT_IV} \
             kontena/server:${KONTENA_VERSION}
+        ExecStop=/usr/bin/docker stop kontena-server-api
 
     - name: kontena-server-haproxy.service
       command: start
@@ -118,3 +120,4 @@ coreos:
         ExecStartPre=-/usr/bin/docker rm kontena-server-haproxy
         ExecStartPre=-/usr/bin/docker pull kontena/haproxy:latest
         ExecStart=/opt/bin/kontena-haproxy.sh
+        ExecStop=/usr/bin/docker stop kontena-server-haproxy
