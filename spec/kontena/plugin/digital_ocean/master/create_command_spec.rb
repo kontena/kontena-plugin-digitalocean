@@ -20,7 +20,9 @@ describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
 
     it 'passes options to provisioner' do
       options = [
-        '--token', 'secretone'
+        '--token', 'secretone',
+        '--no-prompt',
+        '--skip-auth-provider'
       ]
       expect(subject).to receive(:provisioner).with('secretone').and_return(provisioner)
       expect(provisioner).to receive(:run!).with(
