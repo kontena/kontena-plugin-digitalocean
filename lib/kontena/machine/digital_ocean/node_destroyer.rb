@@ -1,10 +1,9 @@
-require 'shell-spinner'
-
 module Kontena
   module Machine
     module DigitalOcean
       class NodeDestroyer
         include RandomName
+        include Kontena::Cli::ShellSpinner
 
         attr_reader :client, :api_client
 
@@ -18,7 +17,7 @@ module Kontena
         def run!(grid, name)
           droplet = client.droplets.all.find{|d| d.name == name}
           if droplet
-            ShellSpinner "Terminating DigitalOcean droplet #{name.colorize(:cyan)} " do
+            spinner "Terminating DigitalOcean droplet #{name.colorize(:cyan)} " do
               result = client.droplets.delete(id: droplet.id)
               if result.is_a?(String)
                 abort "Cannot delete droplet #{name.colorize(:cyan)} in DigitalOcean"
@@ -29,7 +28,7 @@ module Kontena
           end
           node = api_client.get("grids/#{grid['id']}/nodes")['nodes'].find{|n| n['name'] == name}
           if node
-            ShellSpinner "Removing node #{name.colorize(:cyan)} from grid #{grid['name'].colorize(:cyan)} " do
+            spinner "Removing node #{name.colorize(:cyan)} from grid #{grid['name'].colorize(:cyan)} " do
               api_client.delete("grids/#{grid['id']}/nodes/#{name}")
             end
           end

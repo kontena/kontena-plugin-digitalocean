@@ -15,9 +15,9 @@ module Kontena::Plugin::DigitalOcean::Nodes
       client = DropletKit::Client.new(access_token: token)
       droplet = client.droplets.all.find{|d| d.name == name}
       if droplet
-        ShellSpinner "Restarting DigitalOcean droplet #{name.colorize(:cyan)} " do
+        spinner "Restarting DigitalOcean droplet #{name.colorize(:cyan)} " do
           client.droplet_actions.reboot(droplet_id: droplet.id)
-          sleep 5 until client.droplets.find(id: droplet.id).status == 'active'
+          sleep 1 until client.droplets.find(id: droplet.id).status == 'active'
         end
       else
         abort "Cannot find droplet #{name.colorize(:cyan)} in DigitalOcean"

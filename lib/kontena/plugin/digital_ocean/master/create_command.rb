@@ -4,6 +4,7 @@ module Kontena::Plugin::DigitalOcean::Master
   class CreateCommand < Kontena::Command
     include Kontena::Cli::Common
 
+    option "--name", "[NAME]", "Set master name"
     option "--token", "TOKEN", "DigitalOcean API token", required: true
     option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
     option "--ssl-cert", "SSL CERT", "SSL certificate file"
