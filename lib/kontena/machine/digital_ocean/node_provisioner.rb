@@ -1,13 +1,13 @@
 require 'fileutils'
 require 'erb'
 require 'open3'
-require 'shell-spinner'
 
 module Kontena
   module Machine
     module DigitalOcean
       class NodeProvisioner
         include RandomName
+        include Kontena::Cli::ShellSpinner
 
         attr_reader :client, :api_client
 
@@ -40,12 +40,12 @@ module Kontena
             ssh_keys: [ssh_key.id]
           )
           created = client.droplets.create(droplet)
-          ShellSpinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
-            sleep 5 until client.droplets.find(id: created.id).status == 'active'
+          spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
+            sleep 1 until client.droplets.find(id: created.id).status == 'active'
           end
           node = nil
-          ShellSpinner "Waiting for node #{droplet.name.colorize(:cyan)} join to grid #{opts[:grid].colorize(:cyan)} " do
-            sleep 2 until node = droplet_exists_in_grid?(opts[:grid], droplet)
+          spinner "Waiting for node #{droplet.name.colorize(:cyan)} join to grid #{opts[:grid].colorize(:cyan)} " do
+            sleep 1 until node = droplet_exists_in_grid?(opts[:grid], droplet)
           end
           set_labels(
             node,
