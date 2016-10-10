@@ -1,15 +1,17 @@
 require 'securerandom'
+require_relative '../prompts'
 
 module Kontena::Plugin::DigitalOcean::Master
   class CreateCommand < Kontena::Command
     include Kontena::Cli::Common
+    include Kontena::Plugin::DigitalOcean::Prompts
 
     option "--name", "[NAME]", "Set master name"
-    option "--token", "TOKEN", "DigitalOcean API token", required: true
+    option "--token", "TOKEN", "DigitalOcean API token"
+    option "--region", "REGION", "Region"
+    option "--size", "SIZE", "Droplet size"
     option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
     option "--ssl-cert", "SSL CERT", "SSL certificate file"
-    option "--size", "SIZE", "Droplet size", default: '1gb'
-    option "--region", "REGION", "Region", default: 'ams2'
     option "--vault-secret", "VAULT_SECRET", "Secret key for Vault (optional)"
     option "--vault-iv", "VAULT_IV", "Initialization vector for Vault (optional)"
     option "--mongodb-uri", "URI", "External MongoDB uri (optional)"
@@ -17,14 +19,19 @@ module Kontena::Plugin::DigitalOcean::Master
 
 
     def execute
+      do_token = ask_do_token
+
       require_relative '../../../machine/digital_ocean'
 
-      provisioner = provisioner(token)
+      do_region = ask_droplet_region(do_token)
+      do_size = ask_droplet_size(do_token, do_region)
+
+      provisioner = provisioner(do_token)
       provisioner.run!(
           ssh_key: ssh_key,
           ssl_cert: ssl_cert,
-          size: size,
-          region: region,
+          size: do_size,
+          region: do_region,
           version: version,
           vault_secret: vault_secret || SecureRandom.hex(24),
           vault_iv: vault_iv || SecureRandom.hex(24),
