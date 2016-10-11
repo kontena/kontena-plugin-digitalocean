@@ -7,7 +7,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     include Kontena::Plugin::DigitalOcean::Prompts
 
     parameter "NAME", "Node name"
-    option "--token", "TOKEN", "DigitalOcean API token"
+    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN" 
 
     def execute
       require_api_url

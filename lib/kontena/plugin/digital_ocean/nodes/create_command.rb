@@ -7,7 +7,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     include Kontena::Plugin::DigitalOcean::Prompts
 
     parameter "[NAME]", "Node name"
-    option "--token", "TOKEN", "DigitalOcean API token"
+    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN" 
     option "--region", "REGION", "Region"
     option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
     option "--size", "SIZE", "Droplet size"

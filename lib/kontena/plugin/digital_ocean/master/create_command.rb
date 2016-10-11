@@ -7,7 +7,7 @@ module Kontena::Plugin::DigitalOcean::Master
     include Kontena::Plugin::DigitalOcean::Prompts
 
     option "--name", "[NAME]", "Set master name"
-    option "--token", "TOKEN", "DigitalOcean API token"
+    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN" 
     option "--region", "REGION", "Region"
     option "--size", "SIZE", "Droplet size"
     option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
