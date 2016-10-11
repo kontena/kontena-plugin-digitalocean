@@ -10,8 +10,8 @@ module Kontena::Plugin::DigitalOcean::Nodes
     option "--token", "TOKEN", "DigitalOcean API token"
     option "--region", "REGION", "Region"
     option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
-    option "--size", "SIZE", "Droplet size", default: '1gb'
-    option "--count", "COUNT", "How many droplets to create", default: 1
+    option "--size", "SIZE", "Droplet size"
+    option "--count", "COUNT", "How many droplets to create"
     option "--version", "VERSION", "Define installed Kontena version", default: 'latest'
 
     def execute
@@ -24,6 +24,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
 
       do_region = ask_droplet_region(do_token)
       do_size = ask_droplet_size(do_token, do_region)
+      do_count = ask_droplet_count
 
       grid = fetch_grid
       provisioner = provisioner(client(require_token), do_token)
@@ -34,10 +35,18 @@ module Kontena::Plugin::DigitalOcean::Nodes
         ssh_key: ssh_key,
         name: name,
         size: do_size,
-        count: count,
+        count: do_count,
         region: do_region,
         version: version
       )
+    end
+
+    def ask_droplet_count
+      if self.count.nil?
+        prompt.ask('How many droplets?: ', default: 1)
+      else
+        self.count
+      end
     end
 
     # @param [Kontena::Client] client

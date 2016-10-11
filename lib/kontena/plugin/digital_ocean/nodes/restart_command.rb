@@ -1,7 +1,10 @@
+require_relative '../prompts'
+
 module Kontena::Plugin::DigitalOcean::Nodes
   class RestartCommand < Kontena::Command
     include Kontena::Cli::Common
     include Kontena::Cli::GridOptions
+    include Kontena::Plugin::DigitalOcean::Prompts
 
     parameter "NAME", "Node name"
     option "--token", "TOKEN", "DigitalOcean API token"
@@ -9,12 +12,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     def execute
       require_api_url
       require_current_grid
-
-      if self.token.nil?
-        do_token = prompt.ask('DigitalOcean API token: ')
-      else
-        do_token = self.token
-      end
+      do_token = ask_do_token
 
       require_relative '../../../machine/digital_ocean'
 
