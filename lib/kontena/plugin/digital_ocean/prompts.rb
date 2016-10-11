@@ -40,8 +40,9 @@ module Kontena::Plugin::DigitalOcean::Prompts
     nodes = client(token).get("grids/#{current_grid}/nodes")
     prompt.select("Select node: ") do |menu|
       nodes['nodes'].each do |node|
-        initial = node['initial_member'] ? 'initial' : ''
-        menu.choice "#{node['name']} (#{initial})", node['name']
+        initial = node['initial_member'] ? '(initial) ' : ''
+        labels = (node['labels'] || []).join(',')
+        menu.choice "#{node['name']} #{initial}#{labels}", node['name']
       end
     end
   end
