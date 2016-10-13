@@ -29,6 +29,7 @@ module Kontena
             master_uri: opts[:master_uri],
             grid_token: opts[:grid_token],
           }
+          droplets = []
           opts[:count].to_i.times do
             droplet = DropletKit::Droplet.new(
               name: opts[:name] || generate_name,
@@ -43,6 +44,9 @@ module Kontena
             spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
               sleep 1 until client.droplets.find(id: created.id).status == 'active'
             end
+            droplets << droplet
+          end
+          droplets.each do |droplet|
             node = nil
             spinner "Waiting for node #{droplet.name.colorize(:cyan)} join to grid #{opts[:grid].colorize(:cyan)} " do
               sleep 1 until node = droplet_exists_in_grid?(opts[:grid], droplet)
