@@ -25,19 +25,27 @@ describe Kontena::Plugin::DigitalOcean::Nodes::CreateCommand do
       allow(subject).to receive(:client).and_return(client)
     end
 
-    it 'raises usage error if no options are defined' do
-      expect {
-        subject.run([])
-      }.to raise_error(Clamp::UsageError)
+    it 'prompts user if options are missing' do
+      allow(subject).to receive(:provisioner).and_return(spy)
+      expect(subject).to receive(:prompt).and_return(spy).at_least(:once)
+      subject.run([])
     end
 
     it 'passes options to provisioner' do
       options = [
-        '--token', 'secretone'
+        '--token', 'secretone',
+        '--region', 'ams2',
+        '--size', '4gb',
+        '--count', 2
       ]
       expect(subject).to receive(:provisioner).with(client, 'secretone').and_return(provisioner)
       expect(provisioner).to receive(:run!).with(
-        hash_including(ssh_key: '~/.ssh/id_rsa.pub')
+        hash_including(
+          ssh_key: '~/.ssh/id_rsa.pub',
+          region: 'ams2',
+          size: '4gb',
+          count: 2
+        )
       )
       subject.run(options)
     end

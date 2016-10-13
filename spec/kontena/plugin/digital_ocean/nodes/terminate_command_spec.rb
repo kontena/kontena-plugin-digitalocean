@@ -24,14 +24,15 @@ describe Kontena::Plugin::DigitalOcean::Nodes::TerminateCommand do
     end
 
     it 'raises usage error if no options are defined' do
-      expect {
-        subject.run([])
-      }.to raise_error(Clamp::UsageError)
+      allow(subject).to receive(:destroyer).and_return(provisioner)
+      expect(subject).to receive(:prompt).at_least(:once).and_return(spy)
+      subject.run([])
     end
 
     it 'passes options to provisioner' do
       options = [
         '--token', 'secretone',
+        '--force',
         'my-node'
       ]
       expect(subject).to receive(:destroyer).with(client, 'secretone').and_return(provisioner)

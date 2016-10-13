@@ -29,32 +29,37 @@ module Kontena
             master_uri: opts[:master_uri],
             grid_token: opts[:grid_token],
           }
-
-          droplet = DropletKit::Droplet.new(
-            name: opts[:name] || generate_name,
-            region: opts[:region],
-            image: 'coreos-stable',
-            size: opts[:size],
-            private_networking: true,
-            user_data: user_data(userdata_vars),
-            ssh_keys: [ssh_key.id]
-          )
-          created = client.droplets.create(droplet)
-          spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
-            sleep 1 until client.droplets.find(id: created.id).status == 'active'
+          droplets = []
+          opts[:count].to_i.times do
+            droplet = DropletKit::Droplet.new(
+              name: opts[:name] || generate_name,
+              region: opts[:region],
+              image: 'coreos-stable',
+              size: opts[:size],
+              private_networking: true,
+              user_data: user_data(userdata_vars),
+              ssh_keys: [ssh_key.id]
+            )
+            created = client.droplets.create(droplet)
+            spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
+              sleep 1 until client.droplets.find(id: created.id).status == 'active'
+            end
+            droplets << droplet
           end
-          node = nil
-          spinner "Waiting for node #{droplet.name.colorize(:cyan)} join to grid #{opts[:grid].colorize(:cyan)} " do
-            sleep 1 until node = droplet_exists_in_grid?(opts[:grid], droplet)
+          droplets.each do |droplet|
+            node = nil
+            spinner "Waiting for node #{droplet.name.colorize(:cyan)} join to grid #{opts[:grid].colorize(:cyan)} " do
+              sleep 1 until node = droplet_exists_in_grid?(opts[:grid], droplet)
+            end
+            set_labels(
+              node,
+              [
+                "region=#{opts[:region]}",
+                "az=#{opts[:region]}",
+                "provider=digitalocean"
+              ]
+            )
           end
-          set_labels(
-            node,
-            [
-              "region=#{opts[:region]}",
-              "az=#{opts[:region]}",
-              "provider=digitalocean"
-            ]
-          )
         end
 
         def user_data(vars)
