@@ -37,13 +37,20 @@ module Kontena::Plugin::DigitalOcean::Prompts
   end
 
   def ask_node(token)
-    nodes = client(token).get("grids/#{current_grid}/nodes")
-    prompt.select("Select node: ") do |menu|
-      nodes['nodes'].each do |node|
-        initial = node['initial_member'] ? '(initial) ' : ''
-        labels = (node['labels'] || []).join(',')
-        menu.choice "#{node['name']} #{initial}#{labels}", node['name']
+    if self.name.nil?
+      nodes = client(token).get("grids/#{current_grid}/nodes")
+      nodes = nodes['nodes'].select{ |n|
+        n['labels'] && n['labels'].include?('provider=digitalocean'.freeze)
+      }
+      raise "Did not find any nodes with label provider=digitalocean" if nodes.size == 0
+      prompt.select("Select node: ") do |menu|
+        nodes.sort_by{|n| n['node_number'] }.reverse.each do |node|
+          initial = node['initial_member'] ? '(initial) ' : ''
+          menu.choice "#{node['name']} #{initial}", node['name']
+        end
       end
+    else
+      self.name
     end
   end
 end

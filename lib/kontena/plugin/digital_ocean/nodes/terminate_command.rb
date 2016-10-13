@@ -7,7 +7,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     include Kontena::Plugin::DigitalOcean::Prompts
 
     parameter "[NAME]", "Node name"
-    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN" 
+    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN"
     option "--force", :flag, "Force remove", default: false, attribute_name: :forced
 
     def execute
