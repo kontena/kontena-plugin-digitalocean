@@ -41,7 +41,7 @@ module Kontena
               ssh_keys: [ssh_key.id]
             )
             created = client.droplets.create(droplet)
-            spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
+            spinner "Creating a DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
               sleep 1 until client.droplets.find(id: created.id).status == 'active'
             end
             droplets << droplet

@@ -27,7 +27,7 @@ module Kontena
             abort('Invalid ssl cert') unless File.exists?(File.expand_path(opts[:ssl_cert]))
             ssl_cert = File.read(File.expand_path(opts[:ssl_cert]))
           else
-            spinner "Generating self-signed SSL certificate" do
+            spinner "Generating a self-signed SSL certificate" do
               ssl_cert = generate_self_signed_cert
             end
           end
@@ -48,7 +48,7 @@ module Kontena
               ssh_keys: [ssh_key.id]
           )
 
-          spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
+          spinner "Creating a DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
             droplet = client.droplets.create(droplet)
             until droplet.status == 'active'
               droplet = client.droplets.find(id: droplet.id)
@@ -64,13 +64,19 @@ module Kontena
             sleep 0.5 until master_running?
           end
 
-          puts
-          puts "Kontena Master is now running at #{master_url}".colorize(:green)
-          puts
+          master_version = nil
+          spinner "Retrieving Kontena Master version" do
+            master_version = JSON.parse(http_client.get(path: '/').body)["version"] rescue nil
+          end
+
+          spinner "Kontena Master #{master_version} is now running at #{master_url}".colorize(:green)
+
 
           {
             name: name.sub('kontena-master-', ''),
             public_ip: droplet.public_ip,
+            provider: 'digitalocean',
+            version: master_version,
             code: opts[:initial_admin_code]
           }
         end
