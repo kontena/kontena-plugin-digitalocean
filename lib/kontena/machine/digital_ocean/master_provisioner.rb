@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'erb'
 require 'open3'
+require 'json'
 
 module Kontena
   module Machine
