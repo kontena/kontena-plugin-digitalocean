@@ -58,6 +58,13 @@ coreos:
         # default should only match real network interfaces
         [Match]
         Name=eth*
+
+        [Network]
+        DHCP=yes
+
+        [DHCP]
+        UseMTU=true
+        UseDomains=true
     - name: kontena-agent.service
       command: start
       enable: true
