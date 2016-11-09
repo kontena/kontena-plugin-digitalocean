@@ -50,6 +50,8 @@ coreos:
         [Match]
         Type=bridge
         Name=weave*
+
+        [Network]
     - name: zz-default.network
       runtime: false
       content: |
