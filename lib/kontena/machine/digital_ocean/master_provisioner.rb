@@ -71,12 +71,14 @@ module Kontena
           puts "Kontena Master is now running at #{master_url}".colorize(:green)
           puts
 
-          {
+          data = {
             name: name.sub('kontena-master-', ''),
             public_ip: droplet.public_ip,
-            code: opts[:initial_admin_code],
-            ssl_certificate: certificate_public_key(ssl_cert)
+            code: opts[:initial_admin_code]
           }
+          data[:ssl_certificate] = certificate_public_key(ssl_cert) unless opt[:ssl_cert]
+
+          data
         end
 
         def user_data(vars)
