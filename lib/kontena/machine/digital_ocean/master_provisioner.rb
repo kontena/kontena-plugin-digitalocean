@@ -58,7 +58,10 @@ module Kontena
 
           master_url = "https://#{droplet.public_ip}"
           Excon.defaults[:ssl_verify_peer] = false
-          @http_client = Excon.new("#{master_url}", :connect_timeout => 10)
+          @http_client = Excon.new("#{master_url}", {
+            :connect_timeout => 10,
+            :ssl_verify_peer => false
+          })
 
           spinner "Waiting for #{droplet.name.colorize(:cyan)} to start" do
             sleep 0.5 until master_running?
@@ -68,11 +71,16 @@ module Kontena
           puts "Kontena Master is now running at #{master_url}".colorize(:green)
           puts
 
-          {
+          data = {
             name: name.sub('kontena-master-', ''),
             public_ip: droplet.public_ip,
             code: opts[:initial_admin_code]
           }
+          if respond_to?(:certificate_public_key) && !opts[:ssl_cert]
+            data[:ssl_certificate] = certificate_public_key(ssl_cert)
+          end
+
+          data
         end
 
         def user_data(vars)
