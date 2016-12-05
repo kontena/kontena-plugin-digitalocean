@@ -76,7 +76,9 @@ module Kontena
             public_ip: droplet.public_ip,
             code: opts[:initial_admin_code]
           }
-          data[:ssl_certificate] = certificate_public_key(ssl_cert) unless opts[:ssl_cert]
+          if respond_to?(:certificate_public_key) && !opts[:ssl_cert]
+            data[:ssl_certificate] = certificate_public_key(ssl_cert)
+          end
 
           data
         end
