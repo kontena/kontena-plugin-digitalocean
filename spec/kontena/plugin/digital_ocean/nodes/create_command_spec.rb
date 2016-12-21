@@ -36,7 +36,8 @@ describe Kontena::Plugin::DigitalOcean::Nodes::CreateCommand do
         '--token', 'secretone',
         '--region', 'ams2',
         '--size', '4gb',
-        '--count', 2
+        '--count', 2,
+        '--channel', 'beta'
       ]
       expect(subject).to receive(:provisioner).with(client, 'secretone').and_return(provisioner)
       expect(provisioner).to receive(:run!).with(
@@ -44,7 +45,8 @@ describe Kontena::Plugin::DigitalOcean::Nodes::CreateCommand do
           ssh_key: '~/.ssh/id_rsa.pub',
           region: 'ams2',
           size: '4gb',
-          count: 2
+          count: 2,
+          channel: 'beta'
         )
       )
       subject.run(options)
