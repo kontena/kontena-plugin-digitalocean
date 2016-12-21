@@ -53,4 +53,12 @@ module Kontena::Plugin::DigitalOcean::Prompts
       self.name
     end
   end
+
+  def ask_channel
+    prompt.select('Select CoreOS channel') do |menu|
+      menu.choice 'Stable', 'stable'
+      menu.choice 'Beta', 'beta'
+      menu.choice 'Alpha', 'alpha'
+    end
+  end
 end
