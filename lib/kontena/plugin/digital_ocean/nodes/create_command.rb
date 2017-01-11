@@ -13,7 +13,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     option "--size", "SIZE", "Droplet size"
     option "--count", "COUNT", "How many droplets to create"
     option "--version", "VERSION", "Define installed Kontena version", default: 'latest'
-    option "--channel", "CHANNEL", "Define CoreOS image channel", default: 'stable'
+    option "--channel", "CHANNEL", "Define CoreOS image channel"
 
     def execute
       require_api_url
@@ -24,7 +24,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
       require_relative '../../../machine/digital_ocean'
 
       do_region = ask_droplet_region(do_token)
-      coreos_channel = self.channel || ask_channel
+      coreos_channel = self.channel || ask_channel
       do_size = ask_droplet_size(do_token, do_region)
       do_count = ask_droplet_count
 
