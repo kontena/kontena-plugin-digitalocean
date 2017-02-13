@@ -2,7 +2,6 @@ module Kontena
   module Machine
     module DigitalOcean
       class MasterDestroyer
-        include RandomName
         include Kontena::Cli::ShellSpinner
 
         attr_reader :client, :api_client
