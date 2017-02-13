@@ -22,7 +22,12 @@ describe Kontena::Plugin::DigitalOcean::Master::TerminateCommand do
     it 'passes options to provisioner' do
       expect(subject).to receive(:destroyer).and_return(destroyer)
       expect(destroyer).to receive(:run!).with('test-master')
-      subject.run(['--force', 'test-master'])
+      subject.run([
+        '--force',
+        '--token',
+        'secretone',
+        'test-master',
+      ])
     end
   end
 end
