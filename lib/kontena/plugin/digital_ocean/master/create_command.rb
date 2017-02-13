@@ -7,7 +7,7 @@ module Kontena::Plugin::DigitalOcean::Master
     include Kontena::Plugin::DigitalOcean::Prompts
 
     option "--name", "[NAME]", "Set master name"
-    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN" 
+    option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN"
     option "--region", "REGION", "Region"
     option "--size", "SIZE", "Droplet size"
     option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
@@ -28,15 +28,16 @@ module Kontena::Plugin::DigitalOcean::Master
 
       provisioner = provisioner(do_token)
       provisioner.run!(
-          ssh_key: ssh_key,
-          ssl_cert: ssl_cert,
-          size: do_size,
-          region: do_region,
-          version: version,
-          vault_secret: vault_secret || SecureRandom.hex(24),
-          vault_iv: vault_iv || SecureRandom.hex(24),
-          initial_admin_code: SecureRandom.hex(16),
-          mongodb_uri: mongodb_uri
+        name: name,
+        ssh_key: ssh_key,
+        ssl_cert: ssl_cert,
+        size: do_size,
+        region: do_region,
+        version: version,
+        vault_secret: vault_secret || SecureRandom.hex(24),
+        vault_iv: vault_iv || SecureRandom.hex(24),
+        initial_admin_code: SecureRandom.hex(16),
+        mongodb_uri: mongodb_uri
       )
     end
 
