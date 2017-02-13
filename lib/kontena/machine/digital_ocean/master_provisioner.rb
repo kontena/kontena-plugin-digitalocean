@@ -45,7 +45,8 @@ module Kontena
               size: opts[:size],
               private_networking: true,
               user_data: user_data(userdata_vars),
-              ssh_keys: [ssh_key.id]
+              ssh_keys: [ssh_key.id],
+              tags: ['master']
           )
 
           spinner "Creating DigitalOcean droplet #{droplet.name.colorize(:cyan)} " do
