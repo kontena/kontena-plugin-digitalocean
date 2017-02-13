@@ -29,12 +29,13 @@ module Kontena
             master_uri: opts[:master_uri],
             grid_token: opts[:grid_token],
           }
+          image = "coreos-#{opts[:channel]}"
           droplets = []
           opts[:count].to_i.times do
             droplet = DropletKit::Droplet.new(
               name: opts[:name] || generate_name,
               region: opts[:region],
-              image: 'coreos-stable',
+              image: image,
               size: opts[:size],
               private_networking: true,
               user_data: user_data(userdata_vars),
