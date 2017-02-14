@@ -21,6 +21,7 @@ describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
     it 'passes options to provisioner' do
       options = [
         '--token', 'secretone',
+        '--name', 'test-master',
         '--no-prompt',
         '--skip-auth-provider',
         '--region', 'sfo1',
@@ -28,7 +29,9 @@ describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
       ]
       expect(subject).to receive(:provisioner).with('secretone').and_return(provisioner)
       expect(provisioner).to receive(:run!).with(
-        hash_including(ssh_key: '~/.ssh/id_rsa.pub')
+        hash_including(
+          ssh_key: '~/.ssh/id_rsa.pub', name: 'test-master'
+        )
       )
       subject.run(options)
     end

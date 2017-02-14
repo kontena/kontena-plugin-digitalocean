@@ -32,10 +32,10 @@ module Kontena
             end
           end
 
-          name = generate_name
+          name = opts[:name]
           userdata_vars = opts.merge(
               ssl_cert: ssl_cert,
-              server_name: name.sub('kontena-master-', '')
+              server_name: name
           )
 
           droplet = DropletKit::Droplet.new(
@@ -87,10 +87,6 @@ module Kontena
         def user_data(vars)
           cloudinit_template = File.join(__dir__ , '/cloudinit_master.yml')
           erb(File.read(cloudinit_template), vars)
-        end
-
-        def generate_name
-          "kontena-master-#{super}-#{rand(1..9)}"
         end
 
         def ssh_key(public_key)
