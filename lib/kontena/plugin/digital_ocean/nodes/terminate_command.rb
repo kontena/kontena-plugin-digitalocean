@@ -1,4 +1,4 @@
-require_relative '../prompts'
+require 'kontena/plugin/digital_ocean/prompts'
 
 module Kontena::Plugin::DigitalOcean::Nodes
   class TerminateCommand < Kontena::Command
@@ -12,6 +12,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
 
     def execute
       suppress_warnings # until DO merges resource_kit pr #32
+      require 'kontena/machine/digital_ocean'
       require_api_url
       require_current_grid
       token = require_token
@@ -19,7 +20,6 @@ module Kontena::Plugin::DigitalOcean::Nodes
       do_token = ask_do_token
       confirm_command(node_name) unless forced?
 
-      require_relative '../../../machine/digital_ocean'
       grid = client(require_token).get("grids/#{current_grid}")
       destroyer = destroyer(client(token), do_token)
       destroyer.run!(grid, node_name)

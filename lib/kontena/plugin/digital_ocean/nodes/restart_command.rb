@@ -1,4 +1,4 @@
-require_relative '../prompts'
+require 'kontena/plugin/digital_ocean/prompts'
 
 module Kontena::Plugin::DigitalOcean::Nodes
   class RestartCommand < Kontena::Command
@@ -11,11 +11,10 @@ module Kontena::Plugin::DigitalOcean::Nodes
 
     def execute
       suppress_warnings # until DO merges resource_kit pr #32
+      require 'kontena/machine/digital_ocean'
       require_api_url
       require_current_grid
       do_token = ask_do_token
-
-      require_relative '../../../machine/digital_ocean'
 
       node_name = ask_node(require_token)
       client = DropletKit::Client.new(access_token: do_token)

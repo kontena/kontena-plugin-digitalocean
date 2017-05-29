@@ -1,5 +1,4 @@
-require 'securerandom'
-require_relative '../prompts'
+require 'kontena/plugin/digital_ocean/prompts'
 
 module Kontena::Plugin::DigitalOcean::Master
   class CreateCommand < Kontena::Command
@@ -17,13 +16,14 @@ module Kontena::Plugin::DigitalOcean::Master
     option "--mongodb-uri", "URI", "External MongoDB uri (optional)"
     option "--version", "VERSION", "Define installed Kontena version", default: 'latest'
 
-
     def execute
       suppress_warnings # until DO merges resource_kit pr #32
       do_token = ask_do_token
 
-      require_relative '../../../machine/digital_ocean'
+      require 'securerandom'
+      require 'kontena/machine/digital_ocean'
 
+      do_token = ask_do_token
       do_region = ask_droplet_region(do_token)
       do_size = ask_droplet_size(do_token, do_region)
       do_ssh_key_id = ask_ssh_key(do_token)

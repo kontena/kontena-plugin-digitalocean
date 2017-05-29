@@ -1,4 +1,4 @@
-require_relative '../prompts'
+require 'kontena/plugin/digital_ocean/prompts'
 
 module Kontena::Plugin::DigitalOcean::Nodes
   class CreateCommand < Kontena::Command
@@ -17,13 +17,11 @@ module Kontena::Plugin::DigitalOcean::Nodes
 
     def execute
       suppress_warnings # until DO merges resource_kit pr #32
+      require 'kontena/machine/digital_ocean'
       require_api_url
       require_current_grid
 
       do_token = ask_do_token
-
-      require_relative '../../../machine/digital_ocean'
-
       do_region = ask_droplet_region(do_token)
       coreos_channel = self.channel || ask_channel
       do_size = ask_droplet_size(do_token, do_region)
