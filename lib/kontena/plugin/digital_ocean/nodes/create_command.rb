@@ -46,7 +46,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
 
     def ask_droplet_count
       if self.count.nil?
-        prompt.ask('How many droplets?: ', default: 1)
+        prompt.ask('How many droplets?:', default: 1)
       else
         self.count
       end
