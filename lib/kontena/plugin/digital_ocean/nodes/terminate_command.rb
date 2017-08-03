@@ -11,6 +11,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     option "--force", :flag, "Force remove", default: false, attribute_name: :forced
 
     def execute
+      suppress_warnings # until DO merges resource_kit pr #32
       require_api_url
       require_current_grid
       token = require_token
@@ -22,6 +23,8 @@ module Kontena::Plugin::DigitalOcean::Nodes
       grid = client(require_token).get("grids/#{current_grid}")
       destroyer = destroyer(client(token), do_token)
       destroyer.run!(grid, node_name)
+    ensure
+      resume_warnings
     end
 
     # @param [Kontena::Client] client

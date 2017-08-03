@@ -15,6 +15,7 @@ describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
     it 'prompts user if options are missing' do
       expect(subject).to receive(:prompt).at_least(:once).and_return(spy)
       allow(subject).to receive(:provisioner).and_return(provisioner)
+      allow(subject).to receive(:ask_ssh_key).and_return(1)
       subject.run(['--name', 'foo', '--skip-auth-provider'])
     end
 
@@ -28,9 +29,10 @@ describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
         '--size', '2gb'
       ]
       expect(subject).to receive(:provisioner).with('secretone').and_return(provisioner)
+      allow(subject).to receive(:ask_ssh_key).and_return(1)
       expect(provisioner).to receive(:run!).with(
         hash_including(
-          ssh_key: '~/.ssh/id_rsa.pub', name: 'test-master'
+          ssh_key_id: 1, name: 'test-master'
         )
       )
       subject.run(options)

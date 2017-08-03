@@ -1,4 +1,53 @@
 module Kontena::Plugin::DigitalOcean::Prompts
+
+  # Until DO merges https://github.com/digitalocean/resource_kit/pull/32
+  def suppress_warnings
+    @original_verbosity = $VERBOSE
+    $VERBOSE = nil
+  end
+
+  def resume_warnings
+    $VERBOSE = @original_verbosity
+  end
+
+  def ask_ssh_key(do_token)
+    manager = Kontena::Machine::DigitalOcean::SshKeyManager.new(do_token)
+
+    if self.ssh_key
+      puts self.ssh_key.inspect
+      public_key = File.read(self.ssh_key).strip
+    else
+      keys = manager.list
+      key_id = :new
+
+      default_path = File.join(Dir.home, '.ssh', 'id_rsa.pub')
+      default = File.exist?(default_path) ? File.read(default_path).strip : nil
+
+      unless keys.empty?
+        key = prompt.select("Choose SSH key:") do |menu|
+          i = 1
+          keys.each do |item|
+            menu.choice "#{item.name} (#{item.fingerprint})" , item
+            menu.default i if item.public_key == default
+            i += 1
+          end
+          menu.choice "Create new SSH key", :new
+        end
+      end
+
+      if key == :new
+
+        public_key = prompt.ask('SSH public key: (enter an ssh key in OpenSSH format "ssh-xxx xxxxx key_name")', default: default) do |q|
+          q.validate /^ssh-rsa \S+ \S+$/
+        end
+      else
+        public_key = key.public_key
+      end
+
+      manager.find_or_create_by_public_key(public_key).id
+    end
+  end
+
   def ask_do_token
     if self.token.nil?
       prompt.ask('DigitalOcean API token:', echo: false)

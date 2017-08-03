@@ -10,6 +10,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
     option "--token", "TOKEN", "DigitalOcean API token", environment_variable: "DO_TOKEN"
 
     def execute
+      suppress_warnings # until DO merges resource_kit pr #32
       require_api_url
       require_current_grid
       do_token = ask_do_token
@@ -27,6 +28,8 @@ module Kontena::Plugin::DigitalOcean::Nodes
       else
         exit_with_error "Cannot find droplet #{pastel.cyan(name)} in DigitalOcean"
       end
+    ensure
+      resume_warnings
     end
   end
 end
