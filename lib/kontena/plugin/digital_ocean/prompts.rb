@@ -18,7 +18,7 @@ module Kontena::Plugin::DigitalOcean::Prompts
       public_key = File.read(self.ssh_key).strip
     else
       keys = manager.list
-      key_id = :new
+      key = :new
 
       default_path = File.join(Dir.home, '.ssh', 'id_rsa.pub')
       default = File.exist?(default_path) ? File.read(default_path).strip : nil
