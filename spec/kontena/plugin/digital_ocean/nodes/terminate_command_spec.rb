@@ -26,7 +26,7 @@ describe Kontena::Plugin::DigitalOcean::Nodes::TerminateCommand do
     it 'raises usage error if no options are defined' do
       allow(subject).to receive(:destroyer).and_return(provisioner)
       expect(subject).to receive(:prompt).at_least(:once).and_return(spy)
-      subject.run([])
+      subject.run(['--force'])
     end
 
     it 'passes options to provisioner' do

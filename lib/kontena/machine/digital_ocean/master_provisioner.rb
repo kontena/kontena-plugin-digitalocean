@@ -18,11 +18,6 @@ module Kontena
         end
 
         def run!(opts)
-          abort('Invalid ssh key') unless File.exists?(File.expand_path(opts[:ssh_key]))
-
-          ssh_key = ssh_key(File.read(File.expand_path(opts[:ssh_key])).strip)
-          abort('Ssh key does not exist in Digital Ocean') unless ssh_key
-
           if opts[:ssl_cert]
             abort('Invalid ssl cert') unless File.exists?(File.expand_path(opts[:ssl_cert]))
             ssl_cert = File.read(File.expand_path(opts[:ssl_cert]))
@@ -45,7 +40,7 @@ module Kontena
               size: opts[:size],
               private_networking: true,
               user_data: user_data(userdata_vars),
-              ssh_keys: [ssh_key.id],
+              ssh_keys: [opts[:ssh_key_id]],
               tags: ['master']
           )
 
@@ -87,10 +82,6 @@ module Kontena
         def user_data(vars)
           cloudinit_template = File.join(__dir__ , '/cloudinit_master.yml')
           erb(File.read(cloudinit_template), vars)
-        end
-
-        def ssh_key(public_key)
-          client.ssh_keys.all.find{|key| key.public_key == public_key}
         end
 
         def master_running?

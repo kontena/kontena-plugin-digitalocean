@@ -19,11 +19,6 @@ module Kontena
         end
 
         def run!(opts)
-          abort('Invalid ssh key') unless File.exists?(File.expand_path(opts[:ssh_key]))
-
-          ssh_key = ssh_key(File.read(File.expand_path(opts[:ssh_key])).strip)
-          abort('Ssh key does not exist in Digital Ocean') unless ssh_key
-
           userdata_vars = {
             version: opts[:version],
             master_uri: opts[:master_uri],
@@ -39,7 +34,7 @@ module Kontena
               size: opts[:size],
               private_networking: true,
               user_data: user_data(userdata_vars),
-              ssh_keys: [ssh_key.id],
+              ssh_keys: [opts[:ssh_key_id]],
               tags: [opts[:grid]]
             )
             created = client.droplets.create(droplet)

@@ -23,6 +23,7 @@ describe Kontena::Plugin::DigitalOcean::Nodes::CreateCommand do
       allow(subject).to receive(:require_token).and_return('12345')
       allow(subject).to receive(:fetch_grid).and_return({})
       allow(subject).to receive(:client).and_return(client)
+      allow(subject).to receive(:ask_ssh_key).and_return(1)
     end
 
     it 'prompts user if options are missing' do
@@ -43,7 +44,7 @@ describe Kontena::Plugin::DigitalOcean::Nodes::CreateCommand do
       expect(subject).not_to receive(:ask_channel)
       expect(provisioner).to receive(:run!).with(
         hash_including(
-          ssh_key: '~/.ssh/id_rsa.pub',
+          ssh_key_id: 1,
           region: 'ams2',
           size: '4gb',
           count: 2,
@@ -64,7 +65,7 @@ describe Kontena::Plugin::DigitalOcean::Nodes::CreateCommand do
       expect(subject).to receive(:ask_channel).and_return('beta')
       expect(provisioner).to receive(:run!).with(
         hash_including(
-          ssh_key: '~/.ssh/id_rsa.pub',
+          ssh_key_id: 1,
           region: 'ams2',
           size: '4gb',
           count: 2,

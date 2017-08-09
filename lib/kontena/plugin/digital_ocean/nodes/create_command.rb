@@ -9,13 +9,14 @@ module Kontena::Plugin::DigitalOcean::Nodes
     parameter "[NAME]", "Node name"
     option "--token", "TOKEN", "DigitalOcean API token", environment_variable: 'DO_TOKEN'
     option "--region", "REGION", "Region"
-    option "--ssh-key", "SSH_KEY", "Path to ssh public key", default: '~/.ssh/id_rsa.pub'
+    option "--ssh-key", "SSH_KEY", "Path to ssh public key"
     option "--size", "SIZE", "Droplet size"
     option "--count", "COUNT", "How many droplets to create"
     option "--version", "VERSION", "Define installed Kontena version", default: 'latest'
     option "--channel", "CHANNEL", "Define CoreOS image channel"
 
     def execute
+      suppress_warnings # until DO merges resource_kit pr #32
       require_api_url
       require_current_grid
 
@@ -27,6 +28,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
       coreos_channel = self.channel || ask_channel
       do_size = ask_droplet_size(do_token, do_region)
       do_count = ask_droplet_count
+      do_ssh_key_id = ask_ssh_key(do_token)
 
       grid = fetch_grid
       provisioner = provisioner(client(require_token), do_token)
@@ -34,7 +36,7 @@ module Kontena::Plugin::DigitalOcean::Nodes
         master_uri: api_url,
         grid_token: grid['token'],
         grid: current_grid,
-        ssh_key: ssh_key,
+        ssh_key_id: do_ssh_key_id,
         name: name,
         size: do_size,
         count: do_count,
@@ -42,6 +44,8 @@ module Kontena::Plugin::DigitalOcean::Nodes
         version: version,
         channel: coreos_channel
       )
+    ensure
+      resume_warnings
     end
 
     def ask_droplet_count
