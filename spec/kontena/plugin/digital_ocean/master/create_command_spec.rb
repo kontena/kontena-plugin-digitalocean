@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'kontena/plugin/digital_ocean_command'
+require 'kontena/plugin/digital_ocean/master/create_command'
 
 describe Kontena::Plugin::DigitalOcean::Master::CreateCommand do
 

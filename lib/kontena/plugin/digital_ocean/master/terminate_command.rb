@@ -1,3 +1,5 @@
+require 'kontena/plugin/digital_ocean/prompts'
+
 module Kontena::Plugin::DigitalOcean::Master
   class TerminateCommand < Kontena::Command
     include Kontena::Cli::Common
@@ -10,10 +12,9 @@ module Kontena::Plugin::DigitalOcean::Master
 
     def execute
       suppress_warnings # until DO merges resource_kit pr #32
+      require 'kontena/machine/digital_ocean'
       do_token = ask_do_token
       confirm_command(name) unless forced?
-
-      require_relative '../../../machine/digital_ocean'
       destroyer = destroyer(do_token)
       destroyer.run!(name)
     ensure
