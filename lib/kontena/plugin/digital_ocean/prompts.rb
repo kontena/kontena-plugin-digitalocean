@@ -14,7 +14,6 @@ module Kontena::Plugin::DigitalOcean::Prompts
     manager = Kontena::Machine::DigitalOcean::SshKeyManager.new(do_token)
 
     if self.ssh_key
-      puts self.ssh_key.inspect
       public_key = File.read(self.ssh_key).strip
     else
       keys = manager.list
@@ -41,11 +40,10 @@ module Kontena::Plugin::DigitalOcean::Prompts
           q.validate /^ssh-rsa \S+ \S+$/
         end
       else
-        public_key = key.public_key
+        return key.id
       end
-
-      manager.find_or_create_by_public_key(public_key).id
     end
+    manager.find_or_create_by_public_key(public_key).id
   end
 
   def ask_do_token
