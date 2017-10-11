@@ -48,7 +48,7 @@ module Kontena::Plugin::DigitalOcean::Prompts
 
   def ask_do_token
     if self.token.nil?
-      prompt.ask('DigitalOcean API token:', echo: false)
+      prompt.mask('DigitalOcean API token:')
     else
       self.token
     end
